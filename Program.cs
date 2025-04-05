@@ -1,9 +1,9 @@
 using GeoWeatherCurrencyApi.Configuration;
-using GeoWeatherCurrencyApi.ExternalApis;
-using GeoWeatherCurrencyApi.ExternalApis.Interfaces;
+using GeoWeatherCurrencyApi.ExternalApis.ExchangeRate;
+using GeoWeatherCurrencyApi.ExternalApis.GeoDb;
+using GeoWeatherCurrencyApi.ExternalApis.Weather;
 using GeoWeatherCurrencyApi.Infrastructure.Extensions;
 using GeoWeatherCurrencyApi.Services;
-using GeoWeatherCurrencyApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

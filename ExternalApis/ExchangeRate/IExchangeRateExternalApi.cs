@@ -1,4 +1,4 @@
-﻿namespace GeoWeatherCurrencyApi.ExternalApis.Interfaces;
+﻿namespace GeoWeatherCurrencyApi.ExternalApis.ExchangeRate;
 
 public interface IExchangeRateExternalApi
 {

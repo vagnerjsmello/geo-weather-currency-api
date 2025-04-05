@@ -1,9 +1,8 @@
 ﻿using GeoWeatherCurrencyApi.Configuration;
-using GeoWeatherCurrencyApi.ExternalApis.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
-namespace GeoWeatherCurrencyApi.ExternalApis;
+namespace GeoWeatherCurrencyApi.ExternalApis.ExchangeRate;
 
 /// <summary>
 /// Service to retrieve exchange rates using the /live endpoint from ExchangeRate API.
@@ -30,21 +29,18 @@ public class ExchangeRateExternalApi : BaseExternalApi, IExchangeRateExternalApi
         var endpoint = string.Format(_config.Endpoints.Live, _config.ApiKey, fromCurrency, toCurrency);
 
         var response = await _httpClient.GetAsync(endpoint);
-        var json = await GetResponseAsync<JsonDocument>(response);
+        var result = await GetResponseAsync<ExchangeRateExternalApiResponse>(response);
 
-        if (json == null) return null;
+        if (result == null || result.Quotes == null)
+            return null;
 
-        if (json.RootElement.TryGetProperty("quotes", out var quotesProp)
-            && quotesProp.ValueKind == JsonValueKind.Object)
+        var key = fromCurrency + toCurrency;
+        if (result.Quotes.TryGetValue(key, out var rate))
         {
-            var key = fromCurrency + toCurrency;
-            if (quotesProp.TryGetProperty(key, out var rateProp) && rateProp.TryGetDecimal(out var rate))
-            {
-                return rate;
-            }
+            return rate;
         }
-
 
         return null;
     }
+
 }

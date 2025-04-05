@@ -1,4 +1,4 @@
-﻿namespace GeoWeatherCurrencyApi.ExternalApis.Interfaces;
+﻿namespace GeoWeatherCurrencyApi.ExternalApis.Weather;
 
 public interface IWeatherExternalApi
 {
