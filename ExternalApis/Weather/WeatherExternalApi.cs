@@ -1,9 +1,8 @@
 ﻿using GeoWeatherCurrencyApi.Configuration;
-using GeoWeatherCurrencyApi.ExternalApis.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
-namespace GeoWeatherCurrencyApi.ExternalApis;
+namespace GeoWeatherCurrencyApi.ExternalApis.Weather;
 
 /// <summary>
 /// Service to retrieve current temperature data from OpenWeatherMap API.
@@ -31,27 +30,12 @@ public class WeatherExternalApi : BaseExternalApi, IWeatherExternalApi
     /// <inheritdoc />
     public async Task<double?> GetTemperatureCelsiusAsync(double latitude, double longitude)
     {
-        var endpoint = string.Format(
-            _config.Endpoints.CurrentWeatherByCoords,
-            latitude,
-            longitude,
-            _config.ApiKey
-        );
+        var endpoint = string.Format(_config.Endpoints.CurrentWeatherByCoords,latitude,longitude,_config.ApiKey);
 
         var response = await _httpClient.GetAsync(endpoint);
-        var json = await GetResponseAsync<JsonDocument>(response);
+        var result = await GetResponseAsync<WeatherExternalApiResponse>(response);
 
-        if (json == null)
-            return null;
-
-        if (json.RootElement.TryGetProperty("main", out var mainProp) &&
-            mainProp.TryGetProperty("temp", out var tempProp) &&
-            tempProp.TryGetDouble(out var tempCelsius))
-        {
-            return tempCelsius;
-        }
-
-        return null;
+        return result?.Main?.Temp;
     }
 
 }

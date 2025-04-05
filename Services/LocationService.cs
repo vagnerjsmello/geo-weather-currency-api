@@ -1,6 +1,7 @@
-﻿using GeoWeatherCurrencyApi.ExternalApis.Interfaces;
+﻿using GeoWeatherCurrencyApi.ExternalApis.ExchangeRate;
+using GeoWeatherCurrencyApi.ExternalApis.GeoDb;
+using GeoWeatherCurrencyApi.ExternalApis.Weather;
 using GeoWeatherCurrencyApi.Models;
-using GeoWeatherCurrencyApi.Services.Interfaces;
 
 namespace GeoWeatherCurrencyApi.Services;
 
@@ -21,14 +22,14 @@ public class LocationService : ILocationService
         _exchangeRateExternalApi = exchangeRateExternalApi ?? throw new ArgumentNullException(nameof(exchangeRateExternalApi));
     }
 
-    public async Task<LocationInfoResult?> GetLocationInfoAsync(string country, string city, string targetCurrency)
+    public async Task<LocationInfoResponse?> GetLocationInfoAsync(string country, string city, string targetCurrency)
     {
-        var geo = await _geoExternalApi.GetCityInfoAsync(country, city);
-        if (geo == null) return null;
+        var geoCity = await _geoExternalApi.GetCityDataAsync(country, city);
+        if (geoCity == null) return null;
 
 
-        var tempTask = _weatherExternalApi.GetTemperatureCelsiusAsync(geo.Latitude, geo.Longitude);
-        var rateTask = _exchangeRateExternalApi.GetExchangeRateAsync(geo.CurrencyCode, targetCurrency);
+        var tempTask = _weatherExternalApi.GetTemperatureCelsiusAsync(geoCity.Latitude, geoCity.Longitude);
+        var rateTask = _exchangeRateExternalApi.GetExchangeRateAsync(geoCity.CurrencyCode, targetCurrency);
 
         await Task.WhenAll(tempTask, rateTask);
 
@@ -37,13 +38,13 @@ public class LocationService : ILocationService
 
         if (temp == null || exchangeRate == null) return null;
 
-        return new LocationInfoResult
+        return new LocationInfoResponse
         {
-            City = geo.City,
-            Country = geo.Country,
-            CurrencyCode = geo.CurrencyCode,
-            Latitude = geo.Latitude,
-            Longitude = geo.Longitude,
+            City = geoCity.City,
+            Country = geoCity.Country,
+            CurrencyCode = geoCity.CurrencyCode,
+            Latitude = geoCity.Latitude,
+            Longitude = geoCity.Longitude,
             TemperatureCelsius = temp.Value,
             ExchangeRateToTarget = exchangeRate.Value
         };

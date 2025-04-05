@@ -100,21 +100,38 @@ GET https://localhost:7034/api/location-info?country=PT&city=Porto&targetCurrenc
 ```
 GeoWeatherCurrencyApi/
 │
-├── Configuration/
-├── ExternalApis/
-│   ├── Interfaces/
-│   ├── BaseExternalApi.cs
-│   ├── GeoDbExternalApi.cs
-│   ├── WeatherExternalApi.cs
-│   └── ExchangeRateExternalApi.cs
+├── Configuration/                          
+│   ├── ExchangeRateApiConfiguration.cs
+│   ├── GeoDbApiConfiguration.cs
+│   └── WeatherApiConfiguration.cs
+├── ExternalApis/                         
+│   ├── ExchangeRate/
+│   │   ├── ExchangeRateExternalApi.cs
+│   │   ├── ExchangeRateExternalApiResponse.cs
+│   │   └── IExchangeRateExternalApi.cs
+│   ├── GeoDb/
+│   │   ├── GeoDbExternalApi.cs
+│   │   ├── GeoExternalApiResponse.cs
+│   │   └── IGeoDbExternalApi.cs
+│   ├── Weather/
+│   │   ├── WeatherExternalApi.cs
+│   │   ├── WeatherExternalApiResponse.cs
+│   │   └── IWeatherExternalApi.cs
+│   └── BaseExternalApi.cs                  │
 ├── Infrastructure/
 │   └── Extensions/
 │       └── HttpClientConfigurationExtensions.cs
-├── Models/
-├── Services/
+├── Models/                                 
+│   └── LocationInfoResponse.cs
+├── Services/                               
+│   ├── ILocationService.cs
+│   └── LocationService.cs
 ├── appsettings.json
-├── appsettings.Development.json
-└── Program.cs
+├── .gitignore
+├── LICENSE.txt
+├── Program.cs
+└── README.md
+
 ```
 
 ---
